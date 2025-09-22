@@ -21,7 +21,7 @@ void main()
     vec2 uv=gl_FragCoord.xy/u_resolution.xy;
     vec2 vUv=fract(6.*uv);//key
     // uv.x*=u_resolution.x/u_resolution.y;
-    float shading=texture2D(u_tex0,uv).g;//取MonaLisa綠色版作為明亮值
+    float shading=texture2D(u_tex0,uv).g;//取texture的綠色版作為明亮值
     
     vec4 c;
     float step=1./6.;
