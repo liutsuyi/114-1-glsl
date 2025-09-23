@@ -24,24 +24,22 @@ void main()
     float shading=texture2D(u_tex0,uv).g;//取texture的綠色版作為明亮值
     
     vec4 c;
-    float step=1./6.;
-    if(shading<=step){
-        c=mix(texture2D(u_tex6,vUv),texture2D(u_tex5,vUv),6.*shading);
-    }
-    if(shading>step&&shading<=2.*step){
-        c=mix(texture2D(u_tex5,vUv),texture2D(u_tex4,vUv),6.*(shading-step));
-    }
-    if(shading>2.*step&&shading<=3.*step){
-        c=mix(texture2D(u_tex4,vUv),texture2D(u_tex3,vUv),6.*(shading-2.*step));
-    }
-    if(shading>3.*step&&shading<=4.*step){
-        c=mix(texture2D(u_tex3,vUv),texture2D(u_tex2,vUv),6.*(shading-3.*step));
-    }
-    if(shading>4.*step&&shading<=5.*step){
-        c=mix(texture2D(u_tex2,vUv),texture2D(u_tex1,vUv),6.*(shading-4.*step));
-    }
-    if(shading>5.*step){
-        c=mix(texture2D(u_tex1,vUv),vec4(1.),6.*(shading-5.*step));
+    float step = 1.0 / 6.0;
+    if (shading <= step) {
+        c = mix(texture2D(u_tex6, vUv), texture2D(u_tex5, vUv), smoothstep(0.0, step, shading));
+    } else if (shading <= 2.0 * step) {
+        c = mix(texture2D(u_tex5, vUv), texture2D(u_tex4, vUv), smoothstep(step, 2.0 * step, shading));//使用else if避免多重賦值
+    } else if (shading <= 3.0 * step) {
+        c = mix(texture2D(u_tex4, vUv), texture2D(u_tex3, vUv), smoothstep(2.0 * step, 3.0 * step, shading));
+    } else if (shading <= 4.0 * step) {
+        c = mix(texture2D(u_tex3, vUv), texture2D(u_tex2, vUv), smoothstep(3.0 * step, 4.0 * step, shading));
+    } else if (shading <= 5.0 * step) {
+        c = mix(texture2D(u_tex2, vUv), texture2D(u_tex1, vUv), smoothstep(4.0 * step, 5.0 * step, shading));
+    } else if (shading >= 0.95) {
+        c = vec4(1.0);//接近白色直接設為白色，避免殘存原始紋理
+    } else {
+        float t = smoothstep(5.0 * step, 1.0, shading);//製作一個平滑過渡
+        c = mix(texture2D(u_tex1, vUv), vec4(1.0), t);
     }
     
     vec4 inkColor=vec4(0.,0.,1.,1.);
@@ -49,4 +47,6 @@ void main()
     gl_FragColor=src;
     
 }
+
+
 
